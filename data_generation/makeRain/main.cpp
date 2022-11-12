@@ -16,8 +16,8 @@ void getFiles(const string &pattern, vector<string> &filePath);
 int main() {
     map<string, double> params;
     vector<string> imgPath;
-    getFiles("repo/dataset/cityscapes/leftImage/"
-            "train/*/*.png", imgPath);
+    getFiles("/workspaces/RaindropRmv/root_data/"
+            "rootA/*.png", imgPath);
  
     // getFiles("/media/ros/Workshop/ws/Datasets/cityscapes/leftImage/"
     //          "val/*/*.png", imgPath);
@@ -38,8 +38,7 @@ int main() {
     uniform_int_distribution<int> random_psi(30, 45);
     uniform_int_distribution<int> random_dia(3, 20);   // blur kernel size
 
-    string savePath{"repo/dataset/rain_train_sem/"};
-
+    string savePath{"/workspaces/RaindropRmv/root_data_output/"};
 
     for(int index{0}; index < totalIndex; ++index) {
         if(index % 10 == 0) {
@@ -52,10 +51,10 @@ int main() {
         // params["M"] = 100;
         // params["B"] = 8000;
         params["psi"] = random_psi(rng);
+        cout << "Reached waypoint 1. Image Path:\t" << imgPath[index]<< endl;
         Rain rain(params, imgPath[index]);
 
         cv::Mat img;
-
         cv::resize(rain.image, img, cv::Size(), 0.25, 0.25);
         cv::imwrite(str(format("%1%/%2%_I.png")%savePath%index), img);
 //        cv::imshow("test_show input", img);
