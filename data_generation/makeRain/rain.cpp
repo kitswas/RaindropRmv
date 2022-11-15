@@ -23,22 +23,32 @@ Rain::Rain(map<string, double> params, string image_path) {
 
 Mat<double> Rain::get_intrinsic(const string &image_path) {
     string json_path;
-    // json_path = regex_replace(image_path, regex(R"(leftImage)"), "camera");
-    // json_path = regex_replace(json_path, regex(R"(leftImg8bit.png$)"), "camera.json");
-    json_path = regex_replace(image_path, regex(R"(.png)"), ".json");
+    json_path = regex_replace(image_path, regex(R"(leftImage)"), "camera");
+    json_path = regex_replace(json_path, regex(R"(leftImg8bit.png$)"), "camera.json");
+    // json_path = regex_replace(image_path, regex(R"(.png)"), ".json");
+
+    intrinsic = zeros<mat>(3, 3);
 
     ifstream stream(json_path, ifstream::binary);
     Json::Value root;
-    stream >> root;
-    root = root.get("intrinsic", 0);
+    try {
+        stream >> root;
+        root = root.get("intrinsic", 0);
 
-    intrinsic = zeros<mat>(3, 3);
-    intrinsic(0, 0) = root.get("fx", 0).asDouble();
-    intrinsic(1, 1) = root.get("fy", 0).asDouble();
-    intrinsic(2, 2) = 1.0;
-    intrinsic(0, 2) = root.get("u0", 0).asDouble();
-    intrinsic(1, 2) = root.get("v0", 0).asDouble();
+        intrinsic(0, 0) = root.get("fx", 0).asDouble();
+        intrinsic(1, 1) = root.get("fy", 0).asDouble();
+        intrinsic(2, 2) = 1.0;
+        intrinsic(0, 2) = root.get("u0", 0).asDouble();
+        intrinsic(1, 2) = root.get("v0", 0).asDouble();
+    } catch(std::exception e) {
+        e.~exception();
 
+        intrinsic(0, 0) = 0.0;
+        intrinsic(1, 1) = 0.0;
+        intrinsic(2, 2) = 1.0;
+        intrinsic(0, 2) = 0.0;
+        intrinsic(1, 2) = 0.0;
+    }
     return intrinsic;
 }
 
