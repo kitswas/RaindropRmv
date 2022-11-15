@@ -5,3 +5,6 @@ __pycache__/
 .coode/*
 
 data_generation/3rdparty/
+build
+root_data_output
+test_data_output
