@@ -54,6 +54,10 @@ int main() {
         cout << "Reached waypoint 1. Image Path:\t" << imgPath[index]<< endl;
         Rain rain(params, imgPath[index]);
 
+        size_t start_at = imgPath[index].find_last_of('/') + 1; // replace / with \\ on Windows
+        size_t end_at = imgPath[index].find_last_of('.');
+        string basename = imgPath[index].substr(start_at, end_at - start_at);
+
         // cv::Mat img;
         // cv::resize(rain.image, img, cv::Size(), 1, 1);
         // cv::imwrite(str(format("%1%/%2%_I.png")%savePath%index), img);
@@ -65,7 +69,7 @@ int main() {
             cv::resize(rain.rain_image, rain_img, cv::Size(), 0.25, 0.25, cv::INTER_AREA);
             cv::resize(rain_img, rain_img, cv::Size(), 4, 4, cv::INTER_NEAREST);
             // cv::imwrite(str(format("%1%/%2%_I.png")%savePath%index), img);
-            cv::imwrite(str(format("%1%/%2%_RainImg.png")%savePath%index), rain_img);
+            cv::imwrite(str(format("%1%/%2%_RainImg.png")%savePath%basename), rain_img);
 //            cv::imshow("test_show rain", rain_img);
             auto kernel = rain.get_kernel(random_dia(rng));
             rain.blur(kernel);
@@ -100,8 +104,8 @@ int main() {
 //
 //            cv::waitKey();
 
-            cv::imwrite(str(format("%1%/%2%_%3%_RainBlur.png")%savePath%index%count), rain.blur_image);
-            cv::imwrite(str(format("%1%/%2%_%3%_RainMask.png")%savePath%index%count), rain.mask);
+            cv::imwrite(str(format("%1%/%2%_RainBlur.png")%savePath%basename), rain.blur_image);
+            cv::imwrite(str(format("%1%/%2%_RainMask.png")%savePath%basename), rain.mask);
             ++count;
         }
     }
